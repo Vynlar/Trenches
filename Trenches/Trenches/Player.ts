@@ -6,7 +6,7 @@
         private downKey: Phaser.Key;
         private rightKey: Phaser.Key;
         private friction: number;
-        private speed: number;
+        public speed: number;
 
         constructor(game: Phaser.Game, x: number, y: number) {
             super(game, x, y, 'diamond');

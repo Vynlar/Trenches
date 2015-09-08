@@ -71,18 +71,16 @@ var Trenches;
         Play.prototype.create = function () {
             this.player = new Trenches.Player(this.game, 100, 100);
             this.upgrades = this.game.add.group();
-            this.upgrade = new Trenches.Upgrade(this.game, 300, 300);
+            this.upgrade = new Trenches.SpeedUpgrade(this.game, 300, 300);
             this.upgrades.add(this.upgrade);
-            this.upgrade = new Trenches.Upgrade(this.game, 400, 300);
+            this.upgrade = new Trenches.SizeUpgrade(this.game, 400, 300);
             this.upgrades.add(this.upgrade);
-            this.upgrade = new Trenches.Upgrade(this.game, 300, 400);
+            this.upgrade = new Trenches.SpeedUpgrade(this.game, 300, 400);
             this.upgrades.add(this.upgrade);
         };
         Play.prototype.update = function () {
             this.game.physics.arcade.collide(this.player, this.upgrades, function (player, upgrade) {
-                player.changeSpeed(10);
-                player.scale.setTo(1.3, 1.3);
-                upgrade.kill();
+                upgrade.pickup(player);
             });
         };
         return Play;
@@ -130,15 +128,50 @@ var Trenches;
 })(Trenches || (Trenches = {}));
 var Trenches;
 (function (Trenches) {
-    var Upgrade = (function (_super) {
-        __extends(Upgrade, _super);
-        function Upgrade(game, x, y) {
-            _super.call(this, game, x, y, 'firstAid');
+    var Pickup = (function (_super) {
+        __extends(Pickup, _super);
+        function Pickup(game, x, y, image) {
+            _super.call(this, game, x, y, image);
             game.physics.enable(this);
             game.add.existing(this);
         }
-        return Upgrade;
+        return Pickup;
     })(Phaser.Sprite);
-    Trenches.Upgrade = Upgrade;
+    Trenches.Pickup = Pickup;
+    var SpeedUpgrade = (function (_super) {
+        __extends(SpeedUpgrade, _super);
+        function SpeedUpgrade(game, x, y) {
+            _super.call(this, game, x, y, 'firstAid');
+        }
+        SpeedUpgrade.prototype.pickup = function (player) {
+            player.changeSpeed(30);
+            var speedTo = this.game.add.tween(player);
+            speedTo.to({
+                speed: 50
+            }, 2000, Phaser.Easing.Linear);
+            speedTo.start();
+            this.kill();
+        };
+        return SpeedUpgrade;
+    })(Pickup);
+    Trenches.SpeedUpgrade = SpeedUpgrade;
+    var SizeUpgrade = (function (_super) {
+        __extends(SizeUpgrade, _super);
+        function SizeUpgrade(game, x, y) {
+            _super.call(this, game, x, y, 'firstAid');
+            this.scale.setTo(1.5, 1.5);
+        }
+        SizeUpgrade.prototype.pickup = function (player) {
+            var scaleTo = this.game.add.tween(player.scale);
+            scaleTo.to({
+                x: 2,
+                y: 2
+            }, 1000, Phaser.Easing.Quartic.Out);
+            scaleTo.start();
+            this.kill();
+        };
+        return SizeUpgrade;
+    })(Pickup);
+    Trenches.SizeUpgrade = SizeUpgrade;
 })(Trenches || (Trenches = {}));
 //# sourceMappingURL=game.js.map

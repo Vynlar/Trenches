@@ -25,6 +25,7 @@
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="app.ts" />
     <TypeScriptCompile Include="Game.ts" />
     <TypeScriptCompile Include="Boot.ts" />
     <TypeScriptCompile Include="Load.ts" />
@@ -32,6 +33,8 @@
     <TypeScriptCompile Include="phaser.d.ts" />
     <TypeScriptCompile Include="pixi.d.ts" />
     <TypeScriptCompile Include="Play.ts" />
+    <TypeScriptCompile Include="Player.ts" />
+    <TypeScriptCompile Include="Upgrade.ts" />
   </ItemGroup>
   <ItemGroup>
     <None Include="web.Debug.config">
