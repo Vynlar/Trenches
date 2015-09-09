@@ -15,11 +15,9 @@ var Trenches;
             this.load.image('logo', 'assets/phaser.png');
         };
         Boot.prototype.create = function () {
-            console.log('testing');
             this.game.state.start('load', true, false);
         };
         return Boot;
     })(Phaser.State);
     Trenches.Boot = Boot;
 })(Trenches || (Trenches = {}));
-//# sourceMappingURL=Boot.js.map

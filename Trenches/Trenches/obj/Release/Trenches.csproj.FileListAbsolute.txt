@@ -1,0 +1,5 @@
+C:\Users\Adrian\Documents\dev\Trenches\Trenches\Trenches\Trenches\bin\Trenches.dll.config
+C:\Users\Adrian\Documents\dev\Trenches\Trenches\Trenches\Trenches\bin\Trenches.dll
+C:\Users\Adrian\Documents\dev\Trenches\Trenches\Trenches\Trenches\bin\Trenches.pdb
+C:\Users\Adrian\Documents\dev\Trenches\Trenches\Trenches\Trenches\obj\Release\Trenches.dll
+C:\Users\Adrian\Documents\dev\Trenches\Trenches\Trenches\Trenches\obj\Release\Trenches.pdb

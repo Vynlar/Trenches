@@ -49,15 +49,87 @@ var Trenches;
         Load.prototype.preload = function () {
             this.game.load.image('diamond', 'assets/diamond.png');
             this.game.load.image('firstAid', 'assets/firstaid.png');
+            this.game.load.image('ground', 'assets/ground.png');
         };
         Load.prototype.create = function () {
             this.logo = this.add.sprite(this.game.camera.width / 2, this.game.camera.height / 2, 'logo');
             this.logo.anchor.setTo(0.5, 0.5);
-            this.game.state.start('play', true, false);
+            this.game.time.events.add(Phaser.Timer.SECOND, function () {
+                this.game.state.start('play', true, false);
+            }, this);
         };
         return Load;
     })(Phaser.State);
     Trenches.Load = Load;
+})(Trenches || (Trenches = {}));
+var Trenches;
+(function (Trenches) {
+    var Pickup = (function (_super) {
+        __extends(Pickup, _super);
+        function Pickup(game, x, y, image, duration) {
+            _super.call(this, game, x, y, image);
+            game.physics.enable(this);
+            game.add.existing(this);
+        }
+        Pickup.prototype.expire = function (player) {
+        };
+        Pickup.prototype.start = function (player) {
+        };
+        Pickup.prototype.pickup = function (player) {
+            this.player = player;
+            this.start(player);
+            this.game.time.events.add(Phaser.Timer.SECOND * 5, this.expire, this);
+            this.kill();
+        };
+        return Pickup;
+    })(Phaser.Sprite);
+    Trenches.Pickup = Pickup;
+    var SpeedUpgrade = (function (_super) {
+        __extends(SpeedUpgrade, _super);
+        function SpeedUpgrade(game, x, y) {
+            _super.call(this, game, x, y, 'firstAid', 5);
+            this.speedIncrease = 20;
+        }
+        SpeedUpgrade.prototype.start = function () {
+            var speedTo = this.game.add.tween(this.player);
+            speedTo.to({
+                speed: this.player.speed + this.speedIncrease
+            }, 1000);
+            speedTo.onComplete.add(function () {
+                console.log("done: " + this.player.speed);
+            }, this);
+            speedTo.start();
+        };
+        SpeedUpgrade.prototype.expire = function () {
+            this.game.add.tween(this.player).to({
+                speed: this.player.speed - this.speedIncrease
+            }).start();
+        };
+        return SpeedUpgrade;
+    })(Pickup);
+    Trenches.SpeedUpgrade = SpeedUpgrade;
+    var SizeUpgrade = (function (_super) {
+        __extends(SizeUpgrade, _super);
+        function SizeUpgrade(game, x, y) {
+            _super.call(this, game, x, y, 'firstAid', 5);
+        }
+        SizeUpgrade.prototype.start = function () {
+            var scaleTo = this.game.add.tween(this.player.scale);
+            scaleTo.to({
+                x: 2,
+                y: 2
+            }, 1000, Phaser.Easing.Quartic.Out);
+            scaleTo.start();
+        };
+        SizeUpgrade.prototype.expire = function () {
+            this.game.add.tween(this.player.scale).to({
+                x: 1,
+                y: 1
+            }, 1000, Phaser.Easing.Quartic.Out).start();
+        };
+        return SizeUpgrade;
+    })(Pickup);
+    Trenches.SizeUpgrade = SizeUpgrade;
 })(Trenches || (Trenches = {}));
 var Trenches;
 (function (Trenches) {
@@ -69,17 +141,23 @@ var Trenches;
         Play.prototype.preload = function () {
         };
         Play.prototype.create = function () {
+            this.game.world.setBounds(0, 0, 1000, 1000);
+            //this.ground = new Ground(this.game);
+            this.tileMap = new Trenches.Map(this.game, 80, 30);
             this.player = new Trenches.Player(this.game, 100, 100);
-            this.upgrades = this.game.add.group();
+            this.game.camera.follow(this.player);
+            this.pickups = this.game.add.group();
             this.upgrade = new Trenches.SpeedUpgrade(this.game, 300, 300);
-            this.upgrades.add(this.upgrade);
+            this.pickups.add(this.upgrade);
             this.upgrade = new Trenches.SizeUpgrade(this.game, 400, 300);
-            this.upgrades.add(this.upgrade);
+            this.pickups.add(this.upgrade);
             this.upgrade = new Trenches.SpeedUpgrade(this.game, 300, 400);
-            this.upgrades.add(this.upgrade);
+            this.pickups.add(this.upgrade);
         };
         Play.prototype.update = function () {
-            this.game.physics.arcade.collide(this.player, this.upgrades, function (player, upgrade) {
+            this.tileMap.update(this.player);
+            //enable collisions between the player and all pickups
+            this.game.physics.arcade.collide(this.player, this.pickups, function (player, upgrade) {
                 upgrade.pickup(player);
             });
         };
@@ -99,6 +177,7 @@ var Trenches;
             this.rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.D);
             this.friction = 0.9;
             this.speed = 20;
+            this.anchor.set(0.5, 0.5);
             game.physics.enable(this);
             game.add.existing(this);
             this.body.collideWorldBounds = true;
@@ -128,50 +207,92 @@ var Trenches;
 })(Trenches || (Trenches = {}));
 var Trenches;
 (function (Trenches) {
-    var Pickup = (function (_super) {
-        __extends(Pickup, _super);
-        function Pickup(game, x, y, image) {
-            _super.call(this, game, x, y, image);
-            game.physics.enable(this);
+    var Ground = (function (_super) {
+        __extends(Ground, _super);
+        function Ground(game) {
+            _super.call(this, game, 0, 0, game.camera.width, game.camera.height, 'ground');
             game.add.existing(this);
         }
-        return Pickup;
-    })(Phaser.Sprite);
-    Trenches.Pickup = Pickup;
-    var SpeedUpgrade = (function (_super) {
-        __extends(SpeedUpgrade, _super);
-        function SpeedUpgrade(game, x, y) {
-            _super.call(this, game, x, y, 'firstAid');
-        }
-        SpeedUpgrade.prototype.pickup = function (player) {
-            player.changeSpeed(30);
-            var speedTo = this.game.add.tween(player);
-            speedTo.to({
-                speed: 50
-            }, 2000, Phaser.Easing.Linear);
-            speedTo.start();
-            this.kill();
+        Ground.prototype.update = function () {
+            this.x = this.game.camera.x;
+            this.y = this.game.camera.y;
+            this.tilePosition.x = -this.game.camera.x;
+            this.tilePosition.y = -this.game.camera.y;
         };
-        return SpeedUpgrade;
-    })(Pickup);
-    Trenches.SpeedUpgrade = SpeedUpgrade;
-    var SizeUpgrade = (function (_super) {
-        __extends(SizeUpgrade, _super);
-        function SizeUpgrade(game, x, y) {
-            _super.call(this, game, x, y, 'firstAid');
-            this.scale.setTo(1.5, 1.5);
+        return Ground;
+    })(Phaser.TileSprite);
+    Trenches.Ground = Ground;
+    var Map = (function () {
+        function Map(game, width, height) {
+            this.game = game;
+            this.width = width;
+            this.height = height;
+            this.tileHeight = 32;
+            this.tileWidth = 32;
+            this.initGrid(width);
+            this.tileGroup = game.add.group();
+            this.tileGroup.enableBody = true;
+            this.generate();
         }
-        SizeUpgrade.prototype.pickup = function (player) {
-            var scaleTo = this.game.add.tween(player.scale);
-            scaleTo.to({
-                x: 2,
-                y: 2
-            }, 1000, Phaser.Easing.Quartic.Out);
-            scaleTo.start();
-            this.kill();
+        Map.prototype.update = function (player) {
+            this.game.physics.arcade.collide(player, this.tileGroup);
         };
-        return SizeUpgrade;
-    })(Pickup);
-    Trenches.SizeUpgrade = SizeUpgrade;
+        Map.prototype.initGrid = function (width) {
+            this.grid = [];
+            for (var i = 0; i < width; i++) {
+                this.grid[i] = [];
+            }
+        };
+        Map.prototype.generate = function () {
+            this.generateTunnel(1, 10, 2, 80, 0);
+        };
+        Map.prototype.generateTunnel = function (y, max, deviation, length, startingX) {
+            //percent chance that the wall will go up or down
+            var bumpiness = 20;
+            var top = y;
+            var bottom = y + max;
+            for (var x = startingX; x < length; x++) {
+                //check top
+                top = this.randomizeWall(top, bumpiness, deviation, y, y + deviation);
+                //chek bottom
+                bottom = this.randomizeWall(bottom, bumpiness, deviation, (y + max) - deviation, y + max);
+                for (var i = y - 1; i <= max + y + 1; i++) {
+                    //create the tiles for each
+                    console.log(top + " " + bottom + " " + x + " " + i);
+                    if (i <= top || i >= bottom) {
+                        this.grid[x][i] = this.tileGroup.create(x * this.tileWidth, i * this.tileHeight, 'ground');
+                        this.grid[x][i].body.immovable = true;
+                        console.log("created!");
+                    }
+                }
+            }
+        };
+        Map.prototype.randomizeWall = function (location, bumpiness, deviation, min, max) {
+            var random = this.game.rnd.integerInRange(1, 100);
+            if (random <= bumpiness / 2) {
+                //go up
+                if (location >= min) {
+                    //good to go up
+                    location--;
+                }
+                else {
+                    location++;
+                }
+            }
+            else if (random <= bumpiness) {
+                //go down
+                if (location <= max) {
+                    //good to go down
+                    location++;
+                }
+                else {
+                    location--;
+                }
+            }
+            return location;
+        };
+        return Map;
+    })();
+    Trenches.Map = Map;
 })(Trenches || (Trenches = {}));
 //# sourceMappingURL=game.js.map

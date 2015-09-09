@@ -34,7 +34,8 @@
     <TypeScriptCompile Include="pixi.d.ts" />
     <TypeScriptCompile Include="Play.ts" />
     <TypeScriptCompile Include="Player.ts" />
-    <TypeScriptCompile Include="Upgrade.ts" />
+    <TypeScriptCompile Include="Pickup.ts" />
+    <TypeScriptCompile Include="World.ts" />
   </ItemGroup>
   <ItemGroup>
     <None Include="web.Debug.config">

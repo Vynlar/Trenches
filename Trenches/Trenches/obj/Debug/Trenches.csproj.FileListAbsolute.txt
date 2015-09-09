@@ -4,3 +4,9 @@ Q:\dev\PhaserJS\TrenchesTS\Trenches\Trenches\bin\Trenches.dll
 Q:\dev\PhaserJS\TrenchesTS\Trenches\Trenches\bin\Trenches.pdb
 Q:\dev\PhaserJS\TrenchesTS\Trenches\Trenches\obj\Debug\Trenches.dll
 Q:\dev\PhaserJS\TrenchesTS\Trenches\Trenches\obj\Debug\Trenches.pdb
+C:\Users\Adrian\Documents\dev\Trenches\Trenches\Trenches\Trenches\obj\Debug\Trenches.csprojResolveAssemblyReference.cache
+C:\Users\Adrian\Documents\dev\Trenches\Trenches\Trenches\Trenches\obj\Debug\Trenches.dll
+C:\Users\Adrian\Documents\dev\Trenches\Trenches\Trenches\Trenches\obj\Debug\Trenches.pdb
+C:\Users\Adrian\Documents\dev\Trenches\Trenches\Trenches\Trenches\bin\Trenches.dll.config
+C:\Users\Adrian\Documents\dev\Trenches\Trenches\Trenches\Trenches\bin\Trenches.dll
+C:\Users\Adrian\Documents\dev\Trenches\Trenches\Trenches\Trenches\bin\Trenches.pdb
