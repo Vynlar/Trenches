@@ -45,7 +45,7 @@
 
         generateTunnel(y: number, max: number, deviation: number, length: number, startingX: number) {
             //percent chance that the wall will go up or down
-            var bumpiness: number = 20;
+            var bumpiness: number = 80;
             var top: number = y;
             var bottom: number = y + max;
 

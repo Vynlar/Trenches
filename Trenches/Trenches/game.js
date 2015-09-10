@@ -248,7 +248,7 @@ var Trenches;
         };
         Map.prototype.generateTunnel = function (y, max, deviation, length, startingX) {
             //percent chance that the wall will go up or down
-            var bumpiness = 20;
+            var bumpiness = 80;
             var top = y;
             var bottom = y + max;
             for (var x = startingX; x < length; x++) {
